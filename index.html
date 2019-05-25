@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/common/bass.css">
+</head>
+
+<body>
+    <section class="todoapp">
+        <header class="header">
+            <h1>TODO</h1>
+            <input class="new-todo" placeholder="你想干啥呢?" autofocus="true" autocomplete="off">
+        </header>
+        <section class="main">
+            <input id="toggle-all" class="toggle-all" type="checkbox">
+            <label for="toggle-all">1122233</label>
+            <ul class="todo-list">
+                <!--
+                <li data-id="cd62c350-1f22-4ff3-95e1-e3d49bb5c779">
+                    <div class="view">
+                        <input class="toggle" type="checkbox">
+                        <label>hel</label>
+                        <button class="destroy"></button>
+                    </div>
+                    <input class="edit" value="hel">
+                </li>
+-->
+            </ul>
+        </section>
+        <footer class="footer">
+            <span class="todo-count"><strong>0</strong> 项目</span>
+            <ul class="filters">
+                <li>
+                    <a class="selected" href="#/all">所有</a>
+                </li>
+                <li>
+                    <a href="#/active">未完成</a>
+                </li>
+                <li>
+                    <a href="#/completed">完成</a>
+                </li>
+            </ul>
+
+        </footer>
+        <script src="js/jquery.min.js"></script>
+        <script>
+            // 本地存储实现TODO效果 locationStorage
+            $(function ($) {
+                // 获取元素
+                var $data_input = $('.new-todo');
+                var localData = localStorage.getItem('todoList') || '[]';
+                var todoList = JSON.parse(localData);
+
+                // 获取本地存储动态 渲染页面
+                // 制作渲染函数
+                var render = function () {
+
+                        var htm = '';
+                        todoList.forEach(function (item, i) {
+                            htm += '<li data-id="' + item["id"] + '"><div class="view"><input class="toggle" type="checkbox"><label>' + item["value"] + '</label><button class="destroy" data-parent-id="'+ item["id"]+'"></button></div><input class="edit" value="' + item["value"] + '"></li>'
+                        })
+                        $('.todo-list').html(htm);
+                        $('.destroy').on('click',del);
+                        //console.log($('.todo-list').html());
+                    }
+                    // 设置本地localStorage
+                render();
+                // 1 TODO 设置一个key添加数据
+                $data_input.on('keydown', function (e) {
+                        if (e.keyCode != 13) return;
+                        var uniqueId = 'zxk-' + (new Date).valueOf();
+                        var text = $(this).val();
+                        var newData = {
+                            id: uniqueId,
+                            value: text
+                        };
+                        todoList.push(newData);
+                        $(this).val('');
+                        render(todoList);
+                        //                 console.log(todoList);
+                        //                 console.log(JSON.stringify(todoList))
+                        localStorage.setItem('todoList', JSON.stringify(todoList));
+                        //                 console.log(render(todoList))
+                    })
+                    // 2重新设置本地的 存储一个json格式数据 设置key
+
+
+                // 添加删除功能 
+                function del(){
+                    console.log(todoList);
+                    for (var i =0;i<todoList.length;i++){
+                        if (todoList[i]['id'] ==this.dataset['parentId']){
+                            todoList.splice(i,1);
+                        }
+                    }
+                    //todoList.splice(todoList.indexOf(this.dataset['parentId']) ,1);
+                    render();
+                }
+            })
+        </script>
+    </section>
+</body>
+
+</html>
